@@ -1,0 +1,144 @@
+<!DOCTYPE html>
+<html>
+<head>
+<title>Крестики-нолики</title>
+<style>
+body {
+    font-family: sans-serif;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    min-height: 100vh;
+    background-color: #f0f0f0;
+}
+
+table {
+    border-collapse: collapse;
+}
+
+td {
+    width: 100px;
+    height: 100px;
+    border: 3px solid #ddd;
+    text-align: center;
+    font-size: 60px;
+    cursor: pointer;
+}
+
+.x {
+    color: #f00;
+}
+
+.o {
+    color: #00f;
+}
+
+.winner {
+    background-color: #ddd;
+}
+</style>
+</head>
+<body>
+
+<h1>Крестики-нолики</h1>
+
+<table>
+  <tr>
+    <td onclick="handleClick(0, 0)"></td>
+    <td onclick="handleClick(0, 1)"></td>
+    <td onclick="handleClick(0, 2)"></td>
+  </tr>
+  <tr>
+    <td onclick="handleClick(1, 0)"></td>
+    <td onclick="handleClick(1, 1)"></td>
+    <td onclick="handleClick(1, 2)"></td>
+  </tr>
+  <tr>
+    <td onclick="handleClick(2, 0)"></td>
+    <td onclick="handleClick(2, 1)"></td>
+    <td onclick="handleClick(2, 2)"></td>
+  </tr>
+</table>
+
+<button onclick="newGame()">Новая игра</button>
+
+<script>
+let board = [
+        ['', '', ''],
+        ['', '', ''],
+        ['', '', ''],
+        ];
+let currentPlayer = 'X';
+let gameOver = false;
+
+function handleClick(row, col) {
+    if (gameOver || board[row][col] !== '') return;
+
+    board[row][col] = currentPlayer;
+    document.querySelector(`td[onclick="handleClick(${row}, ${col})"]`).textContent = currentPlayer;
+
+    if (checkWin()) {
+        gameOver = true;
+        alert(`Победил ${currentPlayer}!`);
+        document.querySelectorAll('td').forEach(cell => cell.classList.add('winner'));
+    } else if (checkDraw()) {
+        gameOver = true;
+        alert('Ничья!');
+    } else {
+        currentPlayer = currentPlayer === 'X' ? 'O' : 'X';
+    }
+}
+
+function checkWin() {
+    // Проверка горизонталей
+    for (let i = 0; i < 3; i++) {
+        if (board[i][0] === board[i][1] && board[i][1] === board[i][2] && board[i][0] !== '') {
+            return true;
+        }
+    }
+
+    // Проверка вертикалей
+    for (let i = 0; i < 3; i++) {
+        if (board[0][i] === board[1][i] && board[1][i] === board[2][i] && board[0][i] !== '') {
+            return true;
+        }
+    }
+
+    // Проверка диагоналей
+    if ((board[0][0] === board[1][1] && board[1][1] === board[2][2] && board[0][0] !== '') ||
+            (board[0][2] === board[1][1] && board[1][1] === board[2][0] && board[0][2] !== '')) {
+        return true;
+    }
+
+    return false;
+}
+
+function checkDraw() {
+    for (let i = 0; i < 3; i++) {
+        for (let j = 0; j < 3; j++) {
+            if (board[i][j] === '') {
+                return false;
+            }
+        }
+    }
+    return true;
+}
+
+function newGame() {
+    board = [
+    ['', '', ''],
+    ['', '', ''],
+    ['', '', ''],
+  ];
+    currentPlayer = 'X';
+    gameOver = false;
+    document.querySelectorAll('td').forEach(cell => {
+            cell.textContent = '';
+    cell.classList.remove('winner');
+  });
+}
+</script>
+
+</body>
+</html>
